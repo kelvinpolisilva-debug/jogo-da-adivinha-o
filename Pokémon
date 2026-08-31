@@ -1,0 +1,18 @@
+#batalha 
+"while Pikachu.vida> o and Charmander.vida>0:
+Pikachu.atacar (Charmander)
+if Charmander.vida <=0:
+  print ("Charmander foi derrotado")
+  print ("Pikachu venceu")
+ break
+Charmander.atacar(Pikachu)
+if Pikachu.vida <=0:
+  print("Pikachu foi derrotado")
+  print("Charmander venceu")
+ break
+if inimigo.vida <0:
+inimigo.vida =0
+prin("vida de", inimigo.nome,":", inimigo.vida)
+print()
+Pikachu=pokémon("Pikachu", 100,30)
+Charmander=pokémon("Charmander",110,25)
