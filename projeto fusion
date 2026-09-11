@@ -1,0 +1,45 @@
+<html lang="pt-BR">
+
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <title>FUSION</title>
+</head>
+
+<body>
+    <header>FUSION</header>
+
+    <section class="chamada">
+        <div class="chamada-texto">
+            <h1>tudo sobre o Fusion</h1>
+            <p>#projeto e coisas para fazer no fusion</p>
+        </div>
+
+        <div>
+            <iframe width="560" height="315" src="https://onlycars.com.br/2012/12/ford-fusion-rebaixado.html"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <section class="categoria">
+        <h2>Fusion e projetos</h2>
+        <div class="categoria-videos">
+            <a href="https://www.youtube.com/watch?v=jBxIpinPDwM">
+                <img src="https://img.youtube.com/vi/jBxIpinPDwM/maxresdefault.jpg" />
+            </a>
+            <a href="https://www.youtube.com/watch?v=8ISLH6qWwFg">
+                <img src="https://img.youtube.com/vi/8ISLH6qWwFg/maxresdefault.jpg" />
+            </a>
+            <a href="https://www.youtube.com/watch?v=QsQJwmU1fPI">
+                <img src="https://img.youtube.com/vi/QsQJwmU1fPI/maxresdefault.jpg" />
+            </a>
+            <a href="https://www.youtube.com/watch?v=XI0UNFg0JyY">
+                <img src="https://img.youtube.com/vi/XI0UNFg0JyY/maxresdefault.jpg" />
+            </a>
+            <a href="https://www.youtube.com/watch?v=OZYMbI3Mvtc">
+                <img src="https://img.youtube.com/vi/OZYMbI3Mvtc/maxresdefault.jpg" />
+            </a>
+        </div>
+    </section>
+</body>
