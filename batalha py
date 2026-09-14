@@ -1,0 +1,28 @@
+TABELA_VANTAGENS = {
+    "fogo": ["planta", "fantasma"],
+    "planta": ["agua"],
+    "agua": ["fogo"],
+    "fantasma": ["fada"],
+}
+
+
+# Criar a classe Pokemon
+class Pokemon:
+    def __init__(self, nome, vida_max, ataque, defesa, tipo):
+        self.nome = nome
+        self.vida_max = vida_max
+        self.ataque = ataque
+        self.defesa = defesa
+        self.tipo = tipo
+        self.golpes = []
+
+    # Método sem retorno
+    def mostrar_status(self):
+        print(f'{self.nome} => HP: {self.vida_max}')
+
+
+# Criar/instanciar a classe
+pokemon = Pokemon("Mewtwo", 100, 25, 50, "fogo")
+
+# Mostrar status
+pokemon.mostrar_status()
