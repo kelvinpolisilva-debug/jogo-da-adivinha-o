@@ -1,0 +1,679 @@
+import random
+
+
+# =========================================================
+# Aula de Laboratório - Batalha Pokémon com Métodos
+# Versão com Mewtwo e Arceus
+# =========================================================
+
+
+# =========================================================
+# Tabela de vantagens de tipo
+# =========================================================
+
+TABELA_VANTAGENS = {
+    "Fogo": "Planta",
+    "Planta": "Água",
+    "Água": "Fogo",
+    "Elétrico": "Água",
+}
+
+
+# =========================================================
+# Classe Magia
+# =========================================================
+
+class Magia:
+    """Representa um golpe/magia que um Pokémon pode usar."""
+
+    def __init__(self, nome, poder, tipo, combustivel_maximo):
+        self.nome = nome
+        self.poder = poder
+        self.tipo = tipo
+        self.combustivel_maximo = combustivel_maximo
+        self.combustivel_atual = combustivel_maximo
+
+    # Método com retorno
+    def tem_combustivel(self):
+        return self.combustivel_atual > 0
+
+    # Método sem retorno
+    def gastar_combustivel(self):
+        if self.combustivel_atual > 0:
+            self.combustivel_atual -= 1
+
+    # Método com retorno
+    def status_combustivel(self):
+        if self.tem_combustivel():
+            return f"{self.combustivel_atual}/{self.combustivel_maximo}"
+
+        return "ESGOTADO"
+
+
+# =========================================================
+# Classe Pokémon
+# =========================================================
+
+class Pokemon:
+    """Representa um Pokémon participante da batalha."""
+
+    def __init__(self, nome, vida_max, ataque, defesa, tipo):
+        self.nome = nome
+        self.vida_max = vida_max
+        self.vida_atual = vida_max
+        self.ataque = ataque
+        self.defesa = defesa
+        self.tipo = tipo
+        self.golpes = []
+
+    # Método sem retorno
+    def aprender_golpe(self, magia):
+        self.golpes.append(magia)
+
+    # Método com retorno
+    def possui_golpe_disponivel(self):
+        return any(
+            golpe.tem_combustivel()
+            for golpe in self.golpes
+        )
+
+    # Método com retorno
+    def escolher_golpe_aleatorio(self):
+        disponiveis = [
+            golpe
+            for golpe in self.golpes
+            if golpe.tem_combustivel()
+        ]
+
+        if not disponiveis:
+            return None
+
+        return random.choice(disponiveis)
+
+    # Método com retorno
+    def escolher_golpe_jogador(self):
+        print(f"\nVez de {self.nome}! Escolha uma magia:")
+
+        if not self.possui_golpe_disponivel():
+            print("Todas as suas magias estão sem combustível!")
+            print("Você usará o Ataque Desesperado.")
+            return None
+
+        for indice, golpe in enumerate(self.golpes, start=1):
+            print(
+                f"  {indice} - {golpe.nome} "
+                f"({golpe.tipo}, poder {golpe.poder}) "
+                f"[combustível: {golpe.status_combustivel()}]"
+            )
+
+        while True:
+            entrada = input("Digite o número da magia: ").strip()
+
+            if not entrada.isdigit():
+                print("Opção inválida. Digite um número.")
+                continue
+
+            indice = int(entrada)
+
+            if indice < 1 or indice > len(self.golpes):
+                print("Opção inválida. Escolha uma magia da lista.")
+                continue
+
+            golpe = self.golpes[indice - 1]
+
+            if not golpe.tem_combustivel():
+                print("Essa magia está sem combustível. Escolha outra.")
+                continue
+
+            return golpe
+
+    # Método sem retorno
+    def receber_dano(self, dano):
+        self.vida_atual -= dano
+
+        if self.vida_atual < 0:
+            self.vida_atual = 0
+
+    # Método com retorno
+    def esta_vivo(self):
+        return self.vida_atual > 0
+
+    # Método sem retorno
+    def mostrar_status(self):
+        print(
+            f"{self.nome} -> "
+            f"HP: {self.vida_atual}/{self.vida_max}"
+        )
+
+
+# =========================================================
+# Criação dos Pokémon
+# =========================================================
+
+def criar_charmander():
+    pokemon = Pokemon(
+        "Charmander",
+        100,
+        15,
+        5,
+        "Fogo"
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Lança-Chamas", 12, "Fogo", 5)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Arranhão", 6, "Normal", 10)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Garra de Fogo", 9, "Fogo", 6)
+    )
+
+    return pokemon
+
+
+def criar_bulbasaur():
+    pokemon = Pokemon(
+        "Bulbasaur",
+        100,
+        12,
+        8,
+        "Planta"
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Chicote de Videira", 10, "Planta", 6)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Investida", 7, "Normal", 10)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Folha Navalha", 9, "Planta", 6)
+    )
+
+    return pokemon
+
+
+def criar_squirtle():
+    pokemon = Pokemon(
+        "Squirtle",
+        105,
+        11,
+        9,
+        "Água"
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Jato de Água", 11, "Água", 5)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Casco-Concha", 6, "Normal", 10)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Investida de Água", 8, "Água", 6)
+    )
+
+    return pokemon
+
+
+def criar_pikachu():
+    pokemon = Pokemon(
+        "Pikachu",
+        90,
+        16,
+        4,
+        "Elétrico"
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Lança-Trovão", 13, "Elétrico", 4)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Choque do Rato", 6, "Elétrico", 10)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Investida", 8, "Normal", 8)
+    )
+
+    return pokemon
+
+
+# =========================================================
+# MEWTWO
+# =========================================================
+
+def criar_mewtwo():
+    pokemon = Pokemon(
+        "Mewtwo",
+        120,
+        18,
+        10,
+        "Psíquico"
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Confusão", 10, "Psíquico", 8)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Psíquico", 15, "Psíquico", 5)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Onda Mental", 20, "Psíquico", 3)
+    )
+
+    return pokemon
+
+
+# =========================================================
+# ARCEUS
+# =========================================================
+
+def criar_arceus():
+    pokemon = Pokemon(
+        "Arceus",
+        150,
+        22,
+        15,
+        "Normal"
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Julgamento", 20, "Normal", 6)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Força Divina", 25, "Normal", 4)
+    )
+
+    pokemon.aprender_golpe(
+        Magia("Poder Supremo", 30, "Normal", 2)
+    )
+
+    return pokemon
+
+
+# =========================================================
+# Pokédex
+# =========================================================
+
+def criar_pokedex():
+    return [
+        criar_charmander,
+        criar_bulbasaur,
+        criar_squirtle,
+        criar_pikachu,
+        criar_mewtwo,
+        criar_arceus
+    ]
+
+
+# =========================================================
+# Sistema de tipos
+# =========================================================
+
+def listar_fraquezas(tipo):
+    return [
+        tipo_ataque
+        for tipo_ataque, tipo_alvo in TABELA_VANTAGENS.items()
+        if tipo_alvo == tipo
+    ]
+
+
+def calcular_bonus_tipo(tipo_ataque, tipo_defensor):
+    if TABELA_VANTAGENS.get(tipo_ataque) == tipo_defensor:
+        return 1.5
+
+    return 1.0
+
+
+# =========================================================
+# Escolha do Pokémon pelo jogador
+# =========================================================
+
+def escolher_pokemon_jogador(pokedex):
+
+    print("===================================")
+    print("       ESCOLHA SEU POKÉMON")
+    print("===================================")
+
+    for indice, fabrica in enumerate(pokedex, start=1):
+
+        preview = fabrica()
+
+        fraquezas = listar_fraquezas(preview.tipo)
+
+        if fraquezas:
+            texto_fraqueza = (
+                f" | Fraco contra: {', '.join(fraquezas)}"
+            )
+        else:
+            texto_fraqueza = ""
+
+        print(
+            f"{indice} - {preview.nome} "
+            f"({preview.tipo}) | "
+            f"HP: {preview.vida_max} | "
+            f"ATK: {preview.ataque} | "
+            f"DEF: {preview.defesa}"
+            f"{texto_fraqueza}"
+        )
+
+    while True:
+
+        entrada = input(
+            "\nDigite o número do Pokémon: "
+        ).strip()
+
+        if not entrada.isdigit():
+            print("Digite apenas um número.")
+            continue
+
+        escolha = int(entrada)
+
+        if 1 <= escolha <= len(pokedex):
+
+            indice = escolha - 1
+
+            return indice, pokedex[indice]()
+
+        print("Opção inválida. Escolha um Pokémon da lista.")
+
+
+# =========================================================
+# Escolha do Pokémon do computador
+# =========================================================
+
+def escolher_pokemon_computador(
+    pokedex,
+    indice_do_jogador
+):
+
+    opcoes = [
+        fabrica
+        for indice, fabrica in enumerate(pokedex)
+        if indice != indice_do_jogador
+    ]
+
+    fabrica_sorteada = random.choice(opcoes)
+
+    return fabrica_sorteada()
+
+
+# =========================================================
+# Cálculo do dano
+# =========================================================
+
+def calcular_dano(atacante, golpe, defensor):
+
+    dano_base = (
+        atacante.ataque
+        + golpe.poder
+        - defensor.defesa
+    )
+
+    if dano_base < 1:
+        dano_base = 1
+
+    bonus = calcular_bonus_tipo(
+        golpe.tipo,
+        defensor.tipo
+    )
+
+    dano = int(dano_base * bonus)
+
+    if dano < 1:
+        dano = 1
+
+    foi_super_efetivo = bonus > 1.0
+
+    return dano, foi_super_efetivo
+
+
+# =========================================================
+# Ataque
+# =========================================================
+
+def atacar(
+    atacante,
+    golpe_escolhido,
+    defensor
+):
+
+    # Ataque desesperado
+    if golpe_escolhido is None:
+
+        dano = 4
+
+        defensor.receber_dano(dano)
+
+        print(
+            f"\n{atacante.nome} está sem combustível!"
+        )
+
+        print(
+            f"{atacante.nome} usou "
+            f"ATAQUE DESESPERADO!"
+        )
+
+        print(
+            f"Causou {dano} de dano em "
+            f"{defensor.nome}!"
+        )
+
+        return
+
+    # Ataque normal
+    dano, foi_super_efetivo = calcular_dano(
+        atacante,
+        golpe_escolhido,
+        defensor
+    )
+
+    golpe_escolhido.gastar_combustivel()
+
+    defensor.receber_dano(dano)
+
+    print(
+        f"\n{atacante.nome} usou "
+        f"{golpe_escolhido.nome} "
+        f"({golpe_escolhido.tipo})!"
+    )
+
+    print(
+        f"Causou {dano} de dano em "
+        f"{defensor.nome}!"
+    )
+
+    if foi_super_efetivo:
+        print("🔥 É SUPER EFETIVO!")
+
+    print(
+        f"Combustível restante: "
+        f"{golpe_escolhido.status_combustivel()}"
+    )
+
+
+# =========================================================
+# Verificar vencedor
+# =========================================================
+
+def verificar_vencedor(p1, p2):
+
+    if not p1.esta_vivo():
+        return p2
+
+    if not p2.esta_vivo():
+        return p1
+
+    return None
+
+
+# =========================================================
+# Jogar uma partida
+# =========================================================
+
+def jogar_partida(pokedex):
+
+    indice_jogador, jogador = (
+        escolher_pokemon_jogador(pokedex)
+    )
+
+    computador = escolher_pokemon_computador(
+        pokedex,
+        indice_jogador
+    )
+
+    print("\n===================================")
+    print(
+        f"Você escolheu: "
+        f"{jogador.nome} ({jogador.tipo})"
+    )
+
+    print(
+        f"Seu adversário é: "
+        f"{computador.nome} ({computador.tipo})"
+    )
+
+    print("===================================\n")
+
+    turno = 1
+    vencedor = None
+
+    while vencedor is None:
+
+        print(f"\n========== TURNO {turno} ==========")
+
+        # -------------------------------------------------
+        # Jogador ataca
+        # -------------------------------------------------
+
+        golpe_jogador = (
+            jogador.escolher_golpe_jogador()
+        )
+
+        atacar(
+            jogador,
+            golpe_jogador,
+            computador
+        )
+
+        vencedor = verificar_vencedor(
+            jogador,
+            computador
+        )
+
+        # -------------------------------------------------
+        # Computador ataca
+        # -------------------------------------------------
+
+        if vencedor is None:
+
+            golpe_computador = (
+                computador.escolher_golpe_aleatorio()
+            )
+
+            atacar(
+                computador,
+                golpe_computador,
+                jogador
+            )
+
+            vencedor = verificar_vencedor(
+                jogador,
+                computador
+            )
+
+        # -------------------------------------------------
+        # Status
+        # -------------------------------------------------
+
+        print("\n------------- STATUS -------------")
+
+        jogador.mostrar_status()
+        computador.mostrar_status()
+
+        print("----------------------------------")
+
+        turno += 1
+
+    # =====================================================
+    # Resultado final
+    # =====================================================
+
+    print("\n===================================")
+    print("         FIM DA BATALHA!")
+    print("===================================")
+
+    print(
+        f"O vencedor foi: {vencedor.nome}! 🏆"
+    )
+
+
+# =========================================================
+# Jogar novamente
+# =========================================================
+
+def perguntar_jogar_novamente():
+
+    while True:
+
+        resposta = input(
+            "\nDeseja jogar novamente? (s/n): "
+        ).strip().lower()
+
+        if resposta == "s":
+            return True
+
+        if resposta == "n":
+            return False
+
+        print(
+            "Resposta inválida. "
+            "Digite S para sim ou N para não."
+        )
+
+
+# =========================================================
+# Programa principal
+# =========================================================
+
+def main():
+
+    print("===================================")
+    print("   BEM-VINDO À BATALHA POKÉMON!")
+    print("===================================")
+
+    pokedex = criar_pokedex()
+
+    continuar_jogando = True
+
+    while continuar_jogando:
+
+        jogar_partida(pokedex)
+
+        continuar_jogando = (
+            perguntar_jogar_novamente()
+        )
+
+    print("\n===================================")
+    print("Valeu por jogar!")
+    print("Até a próxima batalha! 👋")
+    print("===================================")
+
+
+# =========================================================
+# Início do programa
+# =========================================================
+
+if __name__ == "__main__":
+    main()
